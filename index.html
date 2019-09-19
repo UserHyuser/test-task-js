@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:className="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Test game</title>
+</head>
+<body>
+<form name="form">
+    <div type="text">
+        <label><h2>Игра  угадай четырехзначное число.</h2>  Цифра B - какая-то цифра правильная и на месте, цифра K - цифра правильная, но не на своем месте</label>
+        <br /> <br />
+        <input type = "text" id = "number" autofocus>
+    </div>
+    <button class="button" type="submit">Ваше число</button>
+    <button class="button" name="clearButton" type="button" onclick="clearList()">Очистить список</button>
+</form>
+
+<ul id="root">
+
+</ul>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    const ul = document.querySelector('ul');
+    socket.on('tried', function (text) {
+        const li = document.createElement('li');
+        const itemText = document.createTextNode(text);
+        li.appendChild(itemText);
+        ul.appendChild(li);
+        document.form.reset();
+    });
+    const form = document.querySelector('form');
+    form.addEventListener("submit", submitForm);
+
+    function submitForm(e){ // e - event
+        e.preventDefault();
+        let item = document.querySelector('#number').value;
+        socket.emit('try', item);
+    }
+    function clearList() {
+        document.getElementById("root").innerHTML="";
+    }
+</script>
+
+</body>
+</html>
